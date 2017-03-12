@@ -1,0 +1,128 @@
+Para enviar datos por internet por GPRS
+SIM800L
+https://www.element14.com/community/thread/48966/l/gprs-module-http-getpost?displayFullThread=true
+https://forum.arduino.cc/index.php?topic=384385.0
+http://m2msupport.net/m2msupport/athttpread-get-response-from-http-server/
+https://vsblogs.wordpress.com/2013/11/28/tcp-connection-over-gprs-using-sim900-and-at-commands/
+
+
+// Mi propio codigo
+··· Booteo ···
+AT
+-> OK
+AT+CPIN?
+-> CPIN: READY
+AT+CREG?
+-> CREG: 0,1
+AT+CGATT?
+-> CGATT: 1
+AT+SAPBR=3,1,"Contype","GPRS"
+-> OK
+AT+SAPBR=3,1,"APN","kolbi3g"
+-> OK
+AT+SAPBR=1,1
+-> OK
+AT+SAPBR=2,1
+->+SAPBR: 1,1,"10.193.71.200"
+->
+->OK
+AT+HTTPINIT
+->OK
+AT+HTTPPARA="CID",1
+->OK
+AT+HTTPPARA="URL","http://www.m2msupport.net/m2msupport/test.php"
+->OK
+AT+HTTPACTION=0
+-> OK
+->
+-> +HTTPACTION: 0,200,NB
+AT+HTTPREAD
+-> +HTTPREAD: NB
+-> $Content$
+-> OK
+
+··· TEST ···
+
+AT+HTTPPARA="URL","http://www.m2msupport.net/m2msupport/test.php"
+-> OK
+AT+HTTPACTION=0
+-> OK
+->
+-> +HTTPACTION: 0,200,30
+AT+HTTPREAD
+-> +HTTPREAD: NB
+-> $Content$
+-> OK
+
+··· Despues de 4 minutos ···
+AT+HTTPPARA="URL","http://www.m2msupport.net/m2msupport/test.php"
+-> OK
+AT+HTTPACTION=0
+-> OK
+->
+-> +HTTPACTION: 0,200,30
+AT+HTTPREAD
+-> +HTTPREAD: NB
+-> $Content$
+-> OK
+
+··· Despues de 7 minutos ···
+AT+CSQ   #Ver señal
+-> +CSQ: 15,0
+->
+-> OK
+AT+HTTPPARA="URL","http://www.m2msupport.net/m2msupport/test.php"
+-> OK
+AT+HTTPACTION=0
+-> OK
+->
+-> +HTTPACTION: 0,200,30
+AT+HTTPREAD
+-> +HTTPREAD: NB
+-> $Content$
+-> OK
+
+··· Probando el dormido ···
+AT+CSCLK=1
+-> OK     #Luego de esto no hubo mas respuesta, DTR esta en 1
+AT		  #Luego de poner DTR en 0 funciono
+-> OK
+AT+HTTPPARA="URL","http://www.m2msupport.net/m2msupport/test.php"
+-> OK
+AT+HTTPACTION=0
+-> OK
+->
+-> +HTTPACTION: 0,200,30
+AT+HTTPREAD
+-> +HTTPREAD: NB
+-> $Content$
+-> OK
+
+··· Bucle ···
+GoTo Probando el dormido
+
+
+
+@ Datos relevantes
+Picos de 75mA
+En espera de boteo
+ < 100mA
+  Alrededor de 13mA promedio con picos altos
+Durante registro
+ < 50mA
+  Alrededor de 25mA en promedio
+Durante una lectura
+ < 100mA
+  Pico de 80mA
+Dormido
+ < 4mA
+  Promedio 1.5mA
+WakeUp
+  < 80mA
+  Pico de 60mA visto
+  
+   
+   
++HTTPACTION: 0,603,0 (Dns error) - Volver a bootear
++HTTPACTION: 0,601,0 (network error)
++HTTPACTION: 0,604,0 (stack Busy)
