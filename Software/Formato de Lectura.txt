@@ -1,0 +1,15 @@
+http://www.naylampmechatronics.com/blog/18_Tutorial-M%C3%B3dulo-GPS-con-Arduino.html
+
+$GPRMC,044235.000,A,4322.0289,N,00824.5210,W,0.39,65.46,020615,,,A*44
+
+Donde si analizamos la trama de este ejemplo y basándose en el protocolo NMEA, podríamos determinar las siguientes variables:
+
+- 044235.000 representa la hora GMT (04:42:35)
+- “A” es la indicación de que el dato de posición está fijado y es correcto. “V” sería no válido
+- 4322.0289 representa la longitud (43º 22.0289´)
+- N representa el Norte
+- 00824.5210 representa la latitud (8º 24.5210´)
+- W representa el Oeste
+- 0.39 representa la velocidad en nudos
+- 65.46 representa la orientación en grados
+- 020615 representa la fecha (2 de Junio del 2015)

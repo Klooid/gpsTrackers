@@ -1,0 +1,113 @@
+; ############################################################
+;  Proyecto DownSkies
+;  Bitácora de proyecto
+;  Encargado: Luis Leon V
+;  Inicio: 2017
+; ############################################################
+
+; ------------------------------------------------------------
+; Fecha: 11-Mar-2017
+
+Se realizaron pruebas al GPRS del SIM800L, el cual mostró resultados interesantes.
+Se ha notado la necesidad de dormir el dispositivo por periodos de tiempos relativamente largos
+(5-15 Minutos), debido al consumo de potencia. Asimismo, se ha notado la necesidad de usar
+tecnologías como supercapacitores o batería de Ion-Litio.
+
+@ Datos relevantes
+Picos de 75mA
+En espera de boteo
+ < 100mA
+  Alrededor de 13mA promedio con picos altos
+Durante registro
+ < 50mA
+  Alrededor de 25mA en promedio
+Durante una lectura
+ < 100mA
+  Pico de 80mA
+Dormido
+ < 4mA
+  Promedio 1.5mA
+WakeUp
+  < 80mA
+  Pico de 60mA visto
+  
+Finalmente, se hicieron la sintaxis de códigos necesarios para poner a trabajar de forma efectiva
+el GPRS.
+
+; ------------------------------------------------------------
+; Fecha: 12-Mar-2017
+
+Se hicieron pruebas con el GPS NEO-6M, el cual trabajó de forma adecuada bajo un baudrate de 9600.
+Este dispositivo es capaz de mostrar la velocidad en km/h, la altitud, la latitud y longitud.
+Además, tiene un RTC incorporado, que por el momento, no es tan necesario, pero podría ayudar en el futuro.
+Abajo viene información relevante para considerar el consumo y los parsers.
+
+Tiempo de Booteo: 30S max
+Picos de consumo: 100mA
+Consumo nominal: < 70mA
+
+RMC - NMEA has its own version of essential gps pvt (position, velocity, time) data. It is called RMC, The Recommended Minimum, which will look similar to:
+
+$GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W*6A
+
+Where:
+     RMC          Recommended Minimum sentence C
+     123519       Fix taken at 12:35:19 UTC
+     A            Status A=active or V=Void.
+     4807.038,N   Latitude 48 deg 07.038' N
+     01131.000,E  Longitude 11 deg 31.000' E
+     022.4        Speed over the ground in knots
+     084.4        Track angle in degrees True
+     230394       Date - 23rd of March 1994
+     003.1,W      Magnetic Variation
+     *6A          The checksum data, always begins with *
+
+	 
+VTG - Velocity made good. The gps receiver may use the LC prefix instead of GP if it is emulating Loran output.
+
+  $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*48
+
+where:
+        VTG          Track made good and ground speed
+        054.7,T      True track made good (degrees)
+        034.4,M      Magnetic track made good
+        005.5,N      Ground speed, knots
+        010.2,K      Ground speed, Kilometers per hour
+        *48          Checksum
+		
+GGA - essential fix data which provide 3D location and accuracy data.
+
+ $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
+
+Where:
+     GGA          Global Positioning System Fix Data
+     123519       Fix taken at 12:35:19 UTC
+     4807.038,N   Latitude 48 deg 07.038' N
+     01131.000,E  Longitude 11 deg 31.000' E
+     1            Fix quality: 0 = invalid
+                               1 = GPS fix (SPS)
+                               2 = DGPS fix
+                               3 = PPS fix
+			       4 = Real Time Kinematic
+			       5 = Float RTK
+                               6 = estimated (dead reckoning) (2.3 feature)
+			       7 = Manual input mode
+			       8 = Simulation mode
+     08           Number of satellites being tracked
+     0.9          Horizontal dilution of position
+     545.4,M      Altitude, Meters, above mean sea level
+     46.9,M       Height of geoid (mean sea level) above WGS84
+                      ellipsoid
+     (empty field) time in seconds since last DGPS update
+     (empty field) DGPS station ID number
+     *47          the checksum data, always begins with *
+
+
+
+Baud: 9600
+Enlaces importantes:
+http://www.gpsinformation.org/dale/nmea.htm
+http://www.naylampmechatronics.com/blog/18_Tutorial-M%C3%B3dulo-GPS-con-Arduino.html
+
+  
+  
